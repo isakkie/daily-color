@@ -123,8 +123,16 @@
             </div>
             <div class="decision-row">
               <button class="primary-button" id="saveCapture" type="button" disabled>保存为模板</button>
-              <button class="soft-button" id="markImageOnly" type="button" disabled>不是配色本身好看</button>
-              <p class="decision-hint">选择后不会进入色彩库，只作为这次画面灵感的判断记录。</p>
+              <button
+                class="soft-button tooltip-button"
+                id="markImageOnly"
+                type="button"
+                disabled
+                data-tooltip="选择后不会进入色彩库，只作为这次画面灵感的判断记录。"
+                aria-label="不是配色本身好看。选择后不会进入色彩库，只作为这次画面灵感的判断记录。"
+              >
+                不是配色本身好看
+              </button>
             </div>
           </div>
         </div>
