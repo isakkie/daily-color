@@ -98,16 +98,14 @@
         </div>
 
         <div class="capture-workspace">
-          <label class="drop-zone" for="imageInput" id="dropZone">
+          <label class="image-card drop-zone" for="imageInput" id="dropZone">
             <input id="imageInput" type="file" accept="image/*" />
-            <span>选择或拖入一张照片</span>
-            <small>本地分析，不会上传</small>
-          </label>
-
-          <div class="image-card">
             <canvas id="sourceCanvas" width="800" height="520" aria-label="上传图片预览"></canvas>
-            <p id="emptyCanvasText">照片会出现在这里，旁边会生成抽象色块。</p>
-          </div>
+            <span id="emptyCanvasText">
+              <strong>选择或拖入一张照片</strong>
+              <small>本地分析，不会上传</small>
+            </span>
+          </label>
 
           <div class="analysis-panel">
             <div class="panel-head">
