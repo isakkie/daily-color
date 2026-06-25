@@ -430,7 +430,7 @@ canvas {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.62);
   box-shadow: 0 12px 45px rgba(56, 54, 47, 0.07);
