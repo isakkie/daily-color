@@ -135,8 +135,18 @@
             <p class="eyebrow">我的色彩库</p>
             <h2>留下真正经得起抽象的颜色</h2>
           </div>
-          <button class="ghost-button compact" id="clearLibrary" type="button">清空记录</button>
+          <div class="library-actions">
+            <button class="ghost-button compact" id="exportLibrary" type="button">导出色彩库</button>
+            <label class="ghost-button compact import-button" for="importLibrary">
+              导入色彩库
+              <input id="importLibrary" type="file" accept="application/json,.json" />
+            </label>
+            <button class="ghost-button compact" id="clearLibrary" type="button">清空记录</button>
+          </div>
         </div>
+        <p class="library-sync-note" id="librarySyncNote">
+          色彩库保存在当前浏览器。换设备时，先导出文件，再在另一台设备导入。
+        </p>
         <div id="libraryGrid" class="library-grid"></div>
       </section>
     </main>

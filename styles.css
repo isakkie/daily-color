@@ -527,6 +527,28 @@ canvas {
   padding: 22px;
 }
 
+.library-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.import-button {
+  display: inline-flex;
+  align-items: center;
+}
+
+.import-button input {
+  display: none;
+}
+
+.library-sync-note {
+  margin: -8px 0 18px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .library-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

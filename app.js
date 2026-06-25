@@ -89,6 +89,9 @@ const els = {
   saveCapture: document.querySelector("#saveCapture"),
   markImageOnly: document.querySelector("#markImageOnly"),
   libraryGrid: document.querySelector("#libraryGrid"),
+  librarySyncNote: document.querySelector("#librarySyncNote"),
+  exportLibrary: document.querySelector("#exportLibrary"),
+  importLibrary: document.querySelector("#importLibrary"),
   clearLibrary: document.querySelector("#clearLibrary")
 };
 
@@ -171,10 +174,14 @@ function bindEvents() {
     els.analysisCopy.textContent = "已标记为“只是画面好看”。这张图可以留作灵感，但暂时不进入你的可复用配色库。";
   });
 
+  els.exportLibrary.addEventListener("click", exportLibrary);
+  els.importLibrary.addEventListener("change", importLibrary);
+
   els.clearLibrary.addEventListener("click", () => {
     state.library = [];
     persistLibrary();
     renderLibrary();
+    setLibraryMessage("已清空当前浏览器里的色彩库。");
   });
 }
 
@@ -423,6 +430,88 @@ function addToLibrary(item) {
 
 function persistLibrary() {
   localStorage.setItem("dailyColorLibrary", JSON.stringify(state.library));
+}
+
+function exportLibrary() {
+  if (!state.library.length) {
+    setLibraryMessage("现在还没有可导出的色彩模板。");
+    return;
+  }
+  const payload = {
+    app: "daily-color",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    items: state.library
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  const date = new Date().toISOString().slice(0, 10);
+  const url = URL.createObjectURL(blob);
+  link.href = url;
+  link.download = `daily-color-library-${date}.json`;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  setLibraryMessage("已导出色彩库文件。可以把它发到另一台设备后导入。");
+}
+
+function importLibrary(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(String(reader.result));
+      const importedItems = normalizeImportedLibrary(data);
+      if (!importedItems.length) {
+        setLibraryMessage("没有找到可导入的色彩模板。");
+        return;
+      }
+      const existingKeys = new Set(state.library.map(getLibraryItemKey));
+      const freshItems = importedItems.filter((item) => !existingKeys.has(getLibraryItemKey(item)));
+      state.library = [...freshItems, ...state.library];
+      persistLibrary();
+      renderLibrary();
+      setLibraryMessage(`已导入 ${freshItems.length} 个新模板，跳过 ${importedItems.length - freshItems.length} 个重复模板。`);
+    } catch {
+      setLibraryMessage("导入失败。请确认选择的是每日色彩导出的 JSON 文件。");
+    } finally {
+      event.target.value = "";
+    }
+  };
+  reader.readAsText(file);
+}
+
+function normalizeImportedLibrary(data) {
+  const items = Array.isArray(data) ? data : data?.items;
+  if (!Array.isArray(items)) return [];
+  return items
+    .filter((item) => item && Array.isArray(item.colors) && item.colors.length)
+    .map((item) => ({
+      id: item.id || crypto.randomUUID(),
+      createdAt: item.createdAt || new Date().toISOString(),
+      type: item.type || "导入模板",
+      title: item.title || "导入的配色",
+      note: item.note || "从另一台设备导入的色彩模板。",
+      colors: item.colors
+        .filter((color) => color?.hex)
+        .map((color, index) => ({
+          hex: color.hex,
+          name: color.name || nameColor(color.hex),
+          role: color.role || ["主色", "支撑", "过渡", "点缀", "收边"][index] || "颜色",
+          ratio: Number(color.ratio) || 0
+        }))
+    }))
+    .filter((item) => item.colors.length);
+}
+
+function getLibraryItemKey(item) {
+  return `${item.title}|${item.colors.map((color) => `${color.hex}:${color.ratio}`).join(",")}`;
+}
+
+function setLibraryMessage(message) {
+  els.librarySyncNote.textContent = message;
 }
 
 function renderLibrary() {
