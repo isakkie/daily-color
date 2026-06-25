@@ -514,7 +514,7 @@ function exportLibrary() {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
-  setLibraryMessage("已导出色彩库文件。可以把它发到另一台设备后导入。");
+  setLibraryMessage("已导出 .json 色彩库文件。可以把它发到另一台设备后导入。");
 }
 
 function importLibrary(event) {
