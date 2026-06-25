@@ -322,6 +322,8 @@ button:disabled {
 }
 
 .capture-section {
+  position: relative;
+  z-index: 2;
   margin-bottom: 52px;
 }
 
@@ -346,7 +348,7 @@ button:disabled {
   border: 0;
   background: transparent;
   box-shadow: none;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .drop-zone {
@@ -582,6 +584,8 @@ canvas {
 }
 
 .library-section {
+  position: relative;
+  z-index: 1;
   padding: 22px;
 }
 
