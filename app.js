@@ -171,7 +171,7 @@ function bindEvents() {
   });
 
   els.markImageOnly.addEventListener("click", () => {
-    els.analysisCopy.textContent = "已标记为“只是画面好看”。这张图可以留作灵感，但暂时不进入你的可复用配色库。";
+    els.analysisCopy.textContent = "已标记为“不是颜色本身好看”。这张图可以留作灵感，但暂时不进入你的可复用配色库。";
   });
 
   els.exportLibrary.addEventListener("click", exportLibrary);
