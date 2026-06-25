@@ -1,4 +1,4 @@
-const palettes = [
+const palettes = window.DAILY_COLOR_PALETTES || [
   {
     title: "低饱和的明亮感",
     colors: [
@@ -57,6 +57,7 @@ const palettes = [
 
 const state = {
   currentIndex: 0,
+  refreshCount: 0,
   capturedColors: [],
   library: JSON.parse(localStorage.getItem("dailyColorLibrary") || "[]")
 };
@@ -103,6 +104,7 @@ function init() {
     day: "numeric",
     weekday: "long"
   }).format(new Date());
+  selectDailyPalette();
   renderDaily();
   renderLibrary();
   bindEvents();
@@ -110,19 +112,24 @@ function init() {
 
 function bindEvents() {
   els.refreshPalette.addEventListener("click", () => {
-    state.currentIndex = (state.currentIndex + 1) % palettes.length;
+    state.refreshCount += 1;
+    state.currentIndex = pickPaletteIndex(`manual-${state.refreshCount}`);
     renderDaily();
   });
 
   [els.weather, els.mood, els.energy].forEach((control) => {
-    control.addEventListener("input", renderDaily);
+    control.addEventListener("input", () => {
+      state.refreshCount = 0;
+      renderDaily();
+    });
   });
 
   els.randomMood.addEventListener("click", () => {
     pickRandomSelect(els.weather);
     pickRandomSelect(els.mood);
     els.energy.value = String(1 + Math.floor(Math.random() * 5));
-    state.currentIndex = Math.floor(Math.random() * palettes.length);
+    state.refreshCount += 1;
+    state.currentIndex = pickPaletteIndex(`random-${state.refreshCount}`);
     renderDaily();
   });
 
@@ -187,6 +194,60 @@ function bindEvents() {
 
 function pickRandomSelect(select) {
   select.selectedIndex = Math.floor(Math.random() * select.options.length);
+}
+
+function selectDailyPalette() {
+  const today = getDateKey();
+  const storedDate = localStorage.getItem("dailyColorDate");
+  const storedIndex = Number(localStorage.getItem("dailyColorIndex"));
+  if (storedDate === today && Number.isInteger(storedIndex) && palettes[storedIndex]) {
+    state.currentIndex = storedIndex;
+    return;
+  }
+  state.currentIndex = pickPaletteIndex("daily");
+  localStorage.setItem("dailyColorDate", today);
+  localStorage.setItem("dailyColorIndex", String(state.currentIndex));
+}
+
+function pickPaletteIndex(salt) {
+  const weather = els.weather.value;
+  const mood = els.mood.value;
+  const energy = Number(els.energy.value);
+  const seed = hashString(`${getDateKey()}-${weather}-${mood}-${energy}-${salt}`);
+  const scored = palettes.map((palette, index) => ({
+    index,
+    score: getPaletteScore(palette, weather, mood, energy)
+  }));
+  const bestScore = Math.max(...scored.map((item) => item.score));
+  const candidates = scored.filter((item) => item.score === bestScore);
+  return candidates[seed % candidates.length]?.index || seed % palettes.length;
+}
+
+function getPaletteScore(palette, weather, mood, energy) {
+  const tags = palette.tags || {};
+  let score = 0;
+  if (tags.weather?.includes(weather)) score += 3;
+  if (tags.mood?.includes(mood)) score += 3;
+  if (tags.energy?.includes(energy)) score += 2;
+  if (!tags.weather && !tags.mood && !tags.energy) score += 1;
+  return score;
+}
+
+function getDateKey() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function hashString(value) {
+  let hash = 0;
+  for (let index = 0; index < value.length; index++) {
+    hash = (hash << 5) - hash + value.charCodeAt(index);
+    hash |= 0;
+  }
+  return Math.abs(hash);
 }
 
 function renderDaily() {
