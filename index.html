@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>每日色彩</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar" aria-label="每日色彩">
+        <div>
+          <p class="eyebrow">每日色彩</p>
+          <h1>今天，先和一组颜色相处</h1>
+        </div>
+        <button class="ghost-button" id="refreshPalette" type="button">换一组</button>
+      </header>
+
+      <section class="hero-grid" aria-label="今日色彩">
+        <aside class="side-panel weather-panel">
+          <div class="panel-head">
+            <span>今日线索</span>
+            <button class="icon-button" id="randomMood" type="button" aria-label="随机线索">↻</button>
+          </div>
+          <label>
+            天气
+            <select id="weather">
+              <option value="bright">晴朗</option>
+              <option value="cloudy">阴天</option>
+              <option value="rain">雨天</option>
+              <option value="cool">微凉</option>
+              <option value="hot">炎热</option>
+            </select>
+          </label>
+          <label>
+            心情
+            <select id="mood">
+              <option value="calm">想安静一点</option>
+              <option value="clear">想清爽一点</option>
+              <option value="warm">想温柔一点</option>
+              <option value="bold">想精神一点</option>
+            </select>
+          </label>
+          <label>
+            今天的强度
+            <input id="energy" type="range" min="1" max="5" value="3" />
+          </label>
+        </aside>
+
+        <section class="color-stage" aria-live="polite">
+          <div class="color-art" id="colorArt"></div>
+          <div class="palette-summary">
+            <p class="date-line" id="dateLine"></p>
+            <h2 id="paletteTitle">低饱和的明亮感</h2>
+            <p id="paletteReason">
+              让主色保持轻盈，辅色负责留白，小面积点缀把整组颜色从“安全”推向“有记忆点”。
+            </p>
+          </div>
+          <div class="swatch-strip" id="dailySwatches"></div>
+        </section>
+
+        <aside class="side-panel practice-panel">
+          <div class="panel-head">
+            <span>今日练习</span>
+            <span class="tiny-mark">3 分钟</span>
+          </div>
+          <p id="practiceText">找一个低饱和主色，再用一个小面积暖色让它变得有精神。</p>
+          <button class="primary-button" id="saveDaily" type="button">保存这组颜色</button>
+        </aside>
+      </section>
+
+      <section class="scene-row" aria-label="生活场景">
+        <article>
+          <span>穿在身上</span>
+          <p id="wearScene">米白针织、灰绿外套、酒红小包。</p>
+        </article>
+        <article>
+          <span>放进照片</span>
+          <p id="photoScene">九宫格里让绿色和米白占多数，红色只出现一次。</p>
+        </article>
+        <article>
+          <span>落在纸面</span>
+          <p id="docScene">标题用深灰绿，重点线条用暖红，背景保持温白。</p>
+        </article>
+        <article>
+          <span>带回房间</span>
+          <p id="homeScene">靠垫或小花器做点缀，墙面与织物保持安静。</p>
+        </article>
+      </section>
+
+      <section class="capture-section" aria-label="捕捉颜色">
+        <div class="section-copy">
+          <p class="eyebrow">捕捉颜色</p>
+          <h2>把一眼心动的画面，拆成你能复用的审美语言</h2>
+          <p>
+            上传一张照片，页面会提取主色、支撑色和点缀色。你可以保留、删除或标记“只是画面好看”。
+          </p>
+        </div>
+
+        <div class="capture-workspace">
+          <label class="drop-zone" for="imageInput" id="dropZone">
+            <input id="imageInput" type="file" accept="image/*" />
+            <span>选择或拖入一张照片</span>
+            <small>本地分析，不会上传</small>
+          </label>
+
+          <div class="image-card">
+            <canvas id="sourceCanvas" width="800" height="520" aria-label="上传图片预览"></canvas>
+            <p id="emptyCanvasText">照片会出现在这里，旁边会生成抽象色块。</p>
+          </div>
+
+          <div class="analysis-panel">
+            <div class="panel-head">
+              <span>抽象色块</span>
+              <button class="ghost-button compact" id="clearCapture" type="button">清空</button>
+            </div>
+            <div id="capturePaletteBoard" class="capture-palette-board">
+              <div class="palette-board-preview">
+                <span>抽象后的综合色彩预览</span>
+              </div>
+            </div>
+            <div id="captureSwatches" class="capture-swatches"></div>
+            <div class="analysis-copy" id="analysisCopy">
+              先放入一张照片。系统会把相近颜色归类，避免只得到一个模糊平均色。
+            </div>
+            <div class="decision-row">
+              <button class="primary-button" id="saveCapture" type="button" disabled>保存为模板</button>
+              <button class="soft-button" id="markImageOnly" type="button" disabled>只是画面好看</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="library-section" aria-label="我的色彩库">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">我的色彩库</p>
+            <h2>留下真正经得起抽象的颜色</h2>
+          </div>
+          <button class="ghost-button compact" id="clearLibrary" type="button">清空记录</button>
+        </div>
+        <div id="libraryGrid" class="library-grid"></div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
