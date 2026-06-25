@@ -534,7 +534,7 @@ canvas {
   z-index: 5;
   opacity: 0;
   pointer-events: none;
-  transform: translate(-50%, 6px);
+  transform: translate(-50%, -6px);
   transition:
     opacity 160ms ease,
     transform 160ms ease;
@@ -542,7 +542,7 @@ canvas {
 
 .tooltip-button::before {
   content: attr(data-tooltip);
-  bottom: calc(100% + 10px);
+  top: calc(100% + 10px);
   width: max-content;
   max-width: min(360px, 88vw);
   padding: 10px 12px;
@@ -559,13 +559,13 @@ canvas {
 
 .tooltip-button::after {
   content: "";
-  bottom: calc(100% + 4px);
+  top: calc(100% + 4px);
   width: 10px;
   height: 10px;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.96);
-  transform: translate(-50%, 6px) rotate(45deg);
+  transform: translate(-50%, -6px) rotate(45deg);
 }
 
 .tooltip-button:hover::before,
