@@ -532,11 +532,21 @@ canvas {
   justify-content: flex-end;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
+}
+
+.library-actions .ghost-button {
+  min-width: 116px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 13px;
 }
 
 .import-button {
-  display: inline-flex;
-  align-items: center;
+  color: var(--ink);
 }
 
 .import-button input {
